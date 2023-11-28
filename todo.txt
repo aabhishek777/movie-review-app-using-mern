@@ -1,0 +1,32 @@
+email otp is sending via service but verification middleware implementation is still under progress;
+
+
+user schema & route //done
+actor Schema //done
+
+multer image upload // done
+cloudinary // done
+updateActor API done
+delete actor //done
+search actor //done
+private route for admin // done
+movie uploading API
+-----
+schema//done
+trailerUploading route //done
+movieUplaod route// done
+validation ??remaining yet
+updateMOvie?? remaining yet
+
+
+
+
+
+
+frontend
+setting up enviornment?? remaining yet
+admin navbar //done
+admin route set //done
+required correctoion in input tags feild .. updating delayed by one ? remaining yet
+
+-> working on upload-trailer api sending from admin dashboard
