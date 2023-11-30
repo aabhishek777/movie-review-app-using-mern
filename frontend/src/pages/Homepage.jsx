@@ -1,10 +1,14 @@
-import React from 'react'
+import React from "react";
+import TopFiveMovies from "../components/publicHomepage/TopFiveMovies";
+import MovieCards from "../components/publicHomepage/MovieCards";
 
 const Homepage = () => {
-  
   return (
-    <div>Homepage</div>
-  )
-}
+    <div className="text-white container mt-3">
+      <TopFiveMovies />
+      <MovieCards />
+    </div>
+  );
+};
 
-export default Homepage
+export default Homepage;

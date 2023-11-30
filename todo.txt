@@ -28,5 +28,19 @@ setting up enviornment?? remaining yet
 admin navbar //done
 admin route set //done
 required correctoion in input tags feild .. updating delayed by one ? remaining yet
-
+update actor from clicking edit button
 -> working on upload-trailer api sending from admin dashboard
+
+ wwork
+  const getMovieData = async () => {
+    const data = await getAllMovies();
+
+    console.log(data);
+    setMovieData(data);
+    dispatch("ALL_MOVIE", data);
+
+    console.log(movieData);
+  };
+  useEffect(() => {
+    getMovieData();
+  }, []);

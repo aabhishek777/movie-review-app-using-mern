@@ -13,7 +13,7 @@ const Singin = () => {
   });
 
   const onChangeHaneller = (event) => {
-    console.log(event.target.value);
+   
     setSigninData((preData) => ({
       ...preData,
       [event.target.name]: event.target.value,
@@ -25,14 +25,12 @@ const Singin = () => {
   const onSubmitHaneller = async (event) => {
     event.preventDefault();
     try {
-      const result = await api.post("/login", signinData);
-
-      console.log(result);
-
+      const result  = await api.post("/user/login", signinData);
      
-     
-      if (result.length > 0) {
-        dispatch({type:'user',payload:result?.data?.data})
+      if (result) {
+        dispatch({type:'user',payload:result?.data?.data});
+        localStorage.setItem('auth-token',result?.data?.token)
+        console.log((result?.data?.token));
         navigate("/");
       }
       else{

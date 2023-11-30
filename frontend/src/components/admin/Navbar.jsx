@@ -5,6 +5,10 @@ import { AiOutlineHome } from 'react-icons/ai';
 import { BiMoviePlay } from 'react-icons/bi';
 import { FaUserNinja } from 'react-icons/fa';
 import {FiLogOut} from 'react-icons/fi'
+import { useDispatch } from 'react-redux';
+
+
+
 
 const Navbar = () => {
   return (
@@ -39,16 +43,29 @@ const Navbar = () => {
 
       <div className=''>
         <span>Admin</span>
-       <button className=' flex items-center space-x-2 font-bold'> 
-        <FiLogOut/>
-        <span>Logout</span>
-        </button>
+     <LogoutButton/>
       </div>
      </div>
      
 
     </nav>
   );
+};
+
+
+
+const LogoutButton = () => {
+    const dispatch = useDispatch();
+
+    const handleLogout = () => {
+        localStorage.setItem('auth-token', null);
+        dispatch({ type: 'LOGOUT_USER' });
+    };
+
+    return (
+        <button onClick={handleLogout} className=' flex items-center space-x-2 font-bold'> <FiLogOut/>
+        <span>Logout</span></button>
+    );
 };
 
 export default Navbar;

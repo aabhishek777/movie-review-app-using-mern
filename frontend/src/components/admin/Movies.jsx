@@ -4,7 +4,9 @@
 
 const Movies = () => {
   return (
-    <div className="w-full">Movies</div>
+    <div className="w-full">
+      Movies
+      </div>
   )
 }
 

@@ -26,18 +26,27 @@ const MovieListItem = ({ movie }) => {
   const { title, poster, genere, subtitle } = movie;
   return (
     <table className='w-full border-b'>
-      <tbody>
-        <tr>
-          <td>
-            <h1 className='mb-3'>Latest uploads</h1>
-            <img src={poster} className='w-24 aspect-video' alt='' />
-          </td>
-          <td><div className='font-extrabold'>{title}</div></td>
-          <td><div className='font-extrabold'>{subtitle}</div></td>
-          <td><div className='font-extrabold'>{genere.join(', ')}</div></td>
-        </tr>
-      </tbody>
-    </table>
+     <tbody className='flex h-20 m-5'>
+     <tr className='mr-5'>
+      <td>
+        <img src={poster} className=' aspect-video' alt='' />
+      </td>
+    </tr>
+    <tr className='flex flex-col mr-3'>
+      <td className='font-bold'>Title</td>
+      <td colSpan="3"><div className=''>{title}</div></td>
+    </tr>
+    <tr className='flex flex-col mr-3'>
+      <td className='font-bold'>Subtitle</td>
+      <td colSpan="5"><div className=''>{subtitle}</div></td>
+    </tr>
+    <tr className='flex flex-col mr-3'>
+      <td className='font-bold'>Genere</td>
+      <td colSpan="3"><div >{genere.join(', ')}</div></td>
+    </tr>
+    </tbody>
+  </table>
+
   );
 };
 

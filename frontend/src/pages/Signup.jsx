@@ -25,15 +25,16 @@ const Signup = () => {
   const onSubmitHaneller =async (event) => {
     event.preventDefault();
     try {
-      const result= await api.post('/register',singupData);
+      const result= await api.post('/user/register',singupData);
       console.log(result?.data)
       dispatch({
         type:'user',
         payload:result?.data?.data
       })
 
-      if(result.lenght>0)
+      if(result>0)
       navigate('/')
+    localStorage.setItem('auth-token',result?.token)
 
     } catch (error) {
       console.log(error);

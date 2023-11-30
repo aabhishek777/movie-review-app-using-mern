@@ -8,6 +8,8 @@ import MovieForm from './MovieForm';
 import ComponentBox from '../ComponentBox';
 import LatestUploads from '../LatestUploads';
 
+
+const movieData=[1,2,3,4]
 const Dashboard = () => {
   const [isCreateMenuOpen, setIsCreateMenuOpen] = useState(false);
   const [showAddMovieModal, setShowAddMovieModal] = useState(false);
@@ -172,13 +174,20 @@ const Dashboard = () => {
       )}
 
 
-     
-  <div className="grid  grid-cols-3 gap-5 mt-5 my-5">
+      
+  <div className="grid grid-cols-3 gap-5 mt-5 my-5 ">
     <ComponentBox title='total Uploads' subtitle='100'/>
     <ComponentBox title='total reviews' subtitle='100'/>
     <ComponentBox title='total Users' subtitle='100'/>
-    <LatestUploads/>
+   
   </div>
+  <div className=" grid grid-cols-3 gap-5">
+     {movieData.map(movie=>(
+      <div className="">
+        <LatestUploads/>
+      </div>
+      
+    ))}</div>
 
 
     </div>
