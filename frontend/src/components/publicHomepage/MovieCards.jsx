@@ -1,34 +1,36 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Card from "./Card";
 import { getAllMovies } from "../../api/movies";
+import { useDispatch, useSelector } from "react-redux";
 
-import { useDispatch } from "react-redux";
 const MovieCards = () => {
-  const [movieData, setMovieData] = useEffect([]);
+  const [movieData, setMovieData] = useState([]); // Correcting the usage of useState for initializing state
 
   const dispatch = useDispatch();
 
   const getMovieData = async () => {
-    const data = await getAllMovies();
-
-    console.log(data);
-    setMovieData(data);
-    dispatch("ALL_MOVIE", data);
-
-    console.log(movieData);
+    try {
+      const { data } = await getAllMovies();
+      console.log(data?.data);
+      setMovieData(data?.data);
+      dispatch({ type: "ALL_MOVIES", payload: data?.data });
+    } catch (error) {
+      console.error("Error fetching movies:", error);
+    }
   };
+
   useEffect(() => {
     getMovieData();
   }, []);
 
-  const movie = [11, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1];
+  const movies = useSelector((state) => state?.movie?.movieDetails);
+  console.log(movies);
+
   return (
     <div className="row">
-      {movie.map(() => (
-        <div className="col-3">
-          {movie.map(() => (
-            <Card />
-          ))}
+      {movies.map((movie, index) => (
+        <div className="col-3 mt-5" key={index}>
+          <Card movie={movie} />
         </div>
       ))}
     </div>

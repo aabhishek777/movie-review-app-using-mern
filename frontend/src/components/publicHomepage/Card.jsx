@@ -1,26 +1,20 @@
 import React from "react";
 
-const Card = () => {
+const Card = ({ movie }) => {
   return (
     <div
-      className="m-1 p-3"
+      className="m-1 p-1"
       style={{
         border: "2px solid white",
         borderRadius: "10px",
       }}
     >
-      <img src="" alt="hi" />
+      <img src={movie?.poster?.url} alt="hi" className=" rounded" />
       <div className="d-flex justify-content-between">
         {" "}
-        <h1>movie name</h1>
+        <h1>{movie?.title}</h1>
         <div>ratings</div>
       </div>
-      <p>
-        About movie Lorem ipsum dolor sit amet consectetur adipisicing elit.
-        Reprehenderit quas officiis perferendis sed ex asperiores animi maxime
-        soluta reiciendis ea ipsa velit iste cum officia fugiat ipsum, dicta
-        nostrum dolorem?
-      </p>
     </div>
   );
 };
