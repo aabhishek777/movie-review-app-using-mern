@@ -31,16 +31,11 @@ required correctoion in input tags feild .. updating delayed by one ? remaining 
 update actor from clicking edit button
 -> working on upload-trailer api sending from admin dashboard
 
- wwork
-  const getMovieData = async () => {
-    const data = await getAllMovies();
 
-    console.log(data);
-    setMovieData(data);
-    dispatch("ALL_MOVIE", data);
 
-    console.log(movieData);
-  };
-  useEffect(() => {
-    getMovieData();
-  }, []);
+
+
+///////todo
+
+
+checking review route through postman in backend

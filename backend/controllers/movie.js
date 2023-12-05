@@ -207,10 +207,58 @@ export const getLatestUploads = async (req, res) => {
 export const getAllMovies = async (req, res) => {
   try {
     const result = await Movie.find().sort({ createdAt: -1 });
-    console.log(result);
     res.status(200).json({ msg: "sucess", data: result });
   } catch (error) {
     console.log(error);
     res.status(400).json({ msg: "error", data: error });
+  }
+};
+
+export const getSingleMOvie = async (req, res) => {
+  const { movieId } = req.params;
+  if (!isValidObjectId(movieId))
+    return res.status(400).json({ msg: "Not a valid object id" });
+  try {
+    const result = await Movie.findOne({ _id: movieId }).populate(
+      "director writers cast.actor"
+    );
+
+    const {
+      id: _id,
+      title,
+      storyLine,
+      cast,
+      writers,
+      director,
+      releaseDate,
+      genres,
+      tags,
+      language,
+      poster,
+      triler,
+      type,
+    } = result;
+
+    res.status(200).json({
+      msg: "sucess",
+      data: {
+        id: _id,
+        title,
+        storyLine,
+        cast,
+        writers,
+        director,
+        releaseDate,
+        genres,
+        tags,
+        language,
+        poster,
+        triler,
+        type,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(200).json({ msg: "error", data: error });
   }
 };

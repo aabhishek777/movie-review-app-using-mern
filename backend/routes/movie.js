@@ -6,6 +6,7 @@ import {
   createMovie,
   getAllMovies,
   getLatestUploads,
+  getSingleMOvie,
   searchMovie,
   updateMovieWithoutPoster,
   uploadTrailer,
@@ -41,5 +42,5 @@ router.post(
 router.get("/search/:title", searchMovie);
 router.get("/public/latest-upload", getLatestUploads);
 router.get("/public/all-movie", getAllMovies);
-
+router.get("/public/single-movie/:movieId", getSingleMOvie);
 export default router;

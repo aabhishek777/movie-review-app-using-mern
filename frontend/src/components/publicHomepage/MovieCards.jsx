@@ -6,16 +6,18 @@ import { useDispatch, useSelector } from "react-redux";
 const MovieCards = () => {
   const [movieData, setMovieData] = useState([]); // Correcting the usage of useState for initializing state
 
+  const [flag, setFlag] = useState(false);
   const dispatch = useDispatch();
 
   const getMovieData = async () => {
     try {
       const { data } = await getAllMovies();
       console.log(data?.data);
+      setFlag(true);
       setMovieData(data?.data);
       dispatch({ type: "ALL_MOVIES", payload: data?.data });
     } catch (error) {
-      console.error("Error fetching movies:", error);
+      console.error("Error in fetching movies:", error);
     }
   };
 
@@ -23,16 +25,21 @@ const MovieCards = () => {
     getMovieData();
   }, []);
 
-  const movies = useSelector((state) => state?.movie?.movieDetails);
-  console.log(movies);
+  // const setMovie = () => {
+  //   const movies = useSelector((state) => state?.movie?.movieDetails);
+  //
+  //   console.log(movies);
+  // };
+  // setMovie();
 
   return (
     <div className="row">
-      {movies.map((movie, index) => (
-        <div className="col-3 mt-5" key={index}>
-          <Card movie={movie} />
-        </div>
-      ))}
+      {flag &&
+        movieData?.map((movie, index) => (
+          <div className="col-3 mt-5" key={index}>
+            <Card movie={movie} />
+          </div>
+        ))}
     </div>
   );
 };
