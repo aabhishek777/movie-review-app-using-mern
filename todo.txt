@@ -19,6 +19,7 @@ validation ??remaining yet
 updateMOvie?? remaining yet
 
 
+review route//done
 
 
 
@@ -35,7 +36,23 @@ update actor from clicking edit button
 
 
 
-///////todo
+//////////////////////////////////////////////////***todo***/////////////////////////////////////////////////
 
 
-checking review route through postman in backend
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

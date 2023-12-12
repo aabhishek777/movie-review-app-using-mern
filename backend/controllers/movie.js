@@ -1,28 +1,46 @@
 import { isValidObjectId } from "mongoose";
 import Movie from "../schema/movie.js";
+import Review from "../schema/review.js";
 import cloudinary from "../services/cloudinaryService.js";
 
 export const uploadTrailer = async (req, res) => {
   const { file } = req;
+  const { movieId } = req.params;
 
-  if (!file) {
-    return res.status(400).json({ msg: "file not found" });
+  if (!file || !isValidObjectId(movieId)) {
+    return res
+      .status(400)
+      .json({ msg: "File not found or not a valid object id" });
   }
+
   try {
-    const { secure_url: url, public_id } = await cloudinary.uploader.upload(
+    const { public_id, secure_url: url } = await cloudinary.uploader.upload(
       file.path,
       {
         resource_type: "video",
       }
     );
-    res.status(200).json({ msg: "success", url, public_id });
+
+    const movie = await Movie.findById(movieId);
+
+    if (!movie) return res.status(404).json({ msg: "Movie not found" });
+    if (!movie.trailer) movie.trailer = {};
+
+    movie.trailer.public_id = public_id;
+    movie.trailer.url = url;
+
+    await movie.save();
+
+    res.status(200).json({ msg: "Success", data: movie });
   } catch (error) {
-    return res.status(400).json({ msg: error });
+    console.error(error);
+    return res.status(400).json({ msg: "Error", data: error.message });
   }
 };
 
 export const createMovie = async (req, res) => {
   const { file } = req;
+
   const {
     title,
     storyLine,
@@ -222,7 +240,6 @@ export const getSingleMOvie = async (req, res) => {
     const result = await Movie.findOne({ _id: movieId }).populate(
       "director writers cast.actor"
     );
-
     const {
       id: _id,
       title,
@@ -239,9 +256,50 @@ export const getSingleMOvie = async (req, res) => {
       type,
     } = result;
 
-    res.status(200).json({
+    //////////////////////////////////WORKING HERE TO extract AVG_RATING///////////////////////////////
+
+    //here we are first find the Review document as avgRat in rating filed and then perform isMatch and then perform avrage ratingin the docunment
+    const avgRat = await Review.aggregate([
+      {
+        $match: { parentMovie: result._id },
+      },
+      {
+        $group: {
+          _id: null,
+          count: { $sum: 1 },
+          avgRating: {
+            $avg: "$rating",
+          },
+        },
+      },
+    ]);
+    console.log(avgRat.length);
+    if (avgRat.length === 0) {
+      return res.status(200).json({
+        msg: "success",
+        data: {
+          avgRating: "Rating is not available",
+          id: _id,
+          title,
+          storyLine,
+          cast,
+          writers,
+          director,
+          releaseDate,
+          genres,
+          tags,
+          language,
+          poster,
+          triler,
+          type,
+        },
+      });
+    }
+
+    return res.status(200).json({
       msg: "sucess",
       data: {
+        avgRating: avgRat,
         id: _id,
         title,
         storyLine,
@@ -259,6 +317,129 @@ export const getSingleMOvie = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    res.status(200).json({ msg: "error", data: error });
+    return res.status(200).json({ msg: "error", data: error });
+  }
+};
+
+export const getMoviesByTags = async (req, res) => {
+  const { movieId } = req.params;
+  if (!isValidObjectId(movieId))
+    return res.status(400).json({ msg: "not a valid object Id" });
+
+  try {
+    const movie = await Movie.findOne({ _id: movieId });
+
+    let commonMovies = await Movie.aggregate([
+      {
+        $match: {
+          tags: { $in: [...movie.tags] },
+          _id: { $ne: movie._id },
+        },
+      },
+      {
+        $limit: 5,
+      },
+      {
+        $project: {
+          title: 1,
+          poster: "$poster.url",
+        },
+      },
+    ]);
+
+    for (const m of commonMovies) {
+      const resu = await Review.aggregate([
+        {
+          $match: { parentMovie: m._id },
+        },
+        {
+          $group: {
+            _id: null,
+            count: { $sum: 1 },
+            avgRating: {
+              $avg: "$rating",
+            },
+          },
+        },
+      ]);
+
+      if (resu[0]) {
+        m.avgRating = resu[0].avgRating;
+      } else {
+        m.avgRating = 0; // Set a default value here if needed
+      }
+    }
+
+    return res.status(200).json({ msg: "success", data: commonMovies });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({ msg: "not a valid object Id" });
+  }
+};
+
+export const getTopRatedMovies = async (req, res) => {
+  const { type = "Film" } = req.query;
+
+  try {
+    const movies = await Movie.aggregate([
+      {
+        $match: {
+          reviews: { $exists: true },
+          status: { $eq: "public" },
+        },
+      },
+
+      {
+        $project: {
+          title: 1,
+          poster: "$poster.url",
+          reviewCount: { $size: "$reviews" },
+          type: "$type",
+        },
+      },
+      {
+        $sort: {
+          reviewCount: -1,
+        },
+      },
+      {
+        $limit: 5,
+      },
+    ]);
+
+    let mapMovies;
+    mapMovies = await Promise.all(
+      movies.map(async (m) => {
+        const resu = await Review.aggregate([
+          {
+            $match: { parentMovie: m._id },
+          },
+          {
+            $group: {
+              _id: null,
+              count: { $sum: 1 },
+              avgRating: {
+                $avg: "$rating",
+              },
+            },
+          },
+        ]);
+
+        //  if(resu){
+
+        //  }
+        // const avgRating = resu ? resu[0].avgRating : 0;
+        // console.log(avgRating);
+        return {
+          ...m,
+          avgRating: resu[0],
+        };
+      })
+    );
+    console.log(mapMovies);
+    res.status(200).json({ msg: "success", data: { mapMovies, movies } });
+  } catch (error) {
+    console.error(error);
+    return res.status(400).json({ msg: "error", data: error.message });
   }
 };

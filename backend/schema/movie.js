@@ -1,5 +1,5 @@
-import mongoose from 'mongoose';
-import movieGenres from '../helpers/movieGenres.js';
+import mongoose from "mongoose";
+import movieGenres from "../helpers/movieGenres.js";
 
 const movieSchema = mongoose.Schema(
   {
@@ -15,7 +15,7 @@ const movieSchema = mongoose.Schema(
     },
     director: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Actor',
+      ref: "Actor",
     },
     releaseDate: {
       type: Date,
@@ -23,8 +23,8 @@ const movieSchema = mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['private', 'public'],
-      default: 'public',
+      enum: ["private", "public"],
+      default: "public",
     },
     genres: {
       type: [String],
@@ -39,27 +39,31 @@ const movieSchema = mongoose.Schema(
       {
         actor: {
           type: mongoose.Schema.Types.ObjectId,
-          ref: 'Actor',
+          ref: "Actor",
         },
         roleAs: String,
         leadActor: Boolean,
       },
     ],
-    writers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Actor' }],
+    writers: [{ type: mongoose.Schema.Types.ObjectId, ref: "Actor" }],
     poster: {
       type: Object,
       public_id: { type: String, required: true },
       url: { type: String, required: true },
-      responsive:[URL],
+      responsive: [URL],
       required: true,
     },
     trailer: {
       type: Object,
       public_id: { type: String, required: true },
       url: { type: String, required: true },
-      
     },
-    reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }],
+    type: {
+      type: String,
+      default: "Film",
+    },
+
+    reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: "Review" }],
     language: {
       type: [String],
       required: true,
@@ -68,6 +72,6 @@ const movieSchema = mongoose.Schema(
   { timestamps: true }
 );
 
-const Movie = mongoose.model('Movie', movieSchema);
+const Movie = mongoose.model("Movie", movieSchema);
 
 export default Movie;
