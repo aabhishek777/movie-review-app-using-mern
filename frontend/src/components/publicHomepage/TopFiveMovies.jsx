@@ -15,7 +15,7 @@ function TopFiveMovies() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const result = await getTopFiveMovies(5);
+        const result = await getTopFiveMovies(10);
         setMovieData(result?.data?.data);
       } catch (error) {
         console.error("Error fetching movie data:", error);
@@ -52,8 +52,9 @@ function TopFiveMovies() {
         modules={[EffectCoverflow, Pagination, Navigation]}
         className="swiper_container"
       >
-        {movieData?.map((m) => (
+        {movieData?.map((m, index) => (
           <SwiperSlide
+            key={index}
             style={{
               display: "flex",
               alignItems: "center",

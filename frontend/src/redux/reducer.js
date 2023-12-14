@@ -13,4 +13,8 @@ export const movieReducer = createReducer({}, (builder) => {
   builder.addCase("ALL_MOVIES", (state, action) => {
     state.movieDetails = action.payload;
   });
+
+  builder.addCase("SINGLE_MOVIE", (state, action) => {
+    state.singleMovie = action.payload;
+  });
 });

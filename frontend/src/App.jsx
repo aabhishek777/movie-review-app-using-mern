@@ -11,15 +11,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { loadUser } from "./redux/action";
 import AdminNavigator from "./navigator/AdminNavigator";
 import { useEffect } from "react";
+import SingleMoviePage from "./components/singleMovie/SingleMoviePage";
 
 const App = () => {
   const dispatch = useDispatch();
 
   const fetchUser = async () => {
-    console.log(
-      "-------------------------------",
-      localStorage.getItem("auth-token")
-    );
     try {
       const result = await loadUser(localStorage.getItem("auth-token"));
 
@@ -33,7 +30,6 @@ const App = () => {
 
   useEffect(() => {
     fetchUser();
-    console.log("fetchUser");
   }, []);
 
   const { userDetails } = useSelector((state) => state.user);
@@ -52,6 +48,7 @@ const App = () => {
           <Route path="/auth/verification" element={<EmailVerification />} />
           <Route path="/auth/forgot-password" element={<ForgotPassword />} />
           <Route path="/auth/confirm-password" element={<ConfirmPassword />} />
+          <Route path="/movie/:movieId" element={<SingleMoviePage />} />
         </Routes>
       </>
     );

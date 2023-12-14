@@ -252,7 +252,7 @@ export const getSingleMOvie = async (req, res) => {
       tags,
       language,
       poster,
-      triler,
+      trailer,
       type,
     } = result;
 
@@ -290,7 +290,7 @@ export const getSingleMOvie = async (req, res) => {
           tags,
           language,
           poster,
-          triler,
+          trailer,
           type,
         },
       });
@@ -311,7 +311,7 @@ export const getSingleMOvie = async (req, res) => {
         tags,
         language,
         poster,
-        triler,
+        trailer,
         type,
       },
     });
@@ -337,7 +337,7 @@ export const getMoviesByTags = async (req, res) => {
         },
       },
       {
-        $limit: 5,
+        $limit: 6,
       },
       {
         $project: {
@@ -378,7 +378,7 @@ export const getMoviesByTags = async (req, res) => {
 };
 
 export const getTopRatedMovies = async (req, res) => {
-  const { type = "Film" } = req.query;
+  const { type = "film" } = req.query;
 
   try {
     const movies = await Movie.aggregate([
@@ -386,9 +386,9 @@ export const getTopRatedMovies = async (req, res) => {
         $match: {
           reviews: { $exists: true },
           status: { $eq: "public" },
+          // type: { $eq: type }, //blocked filtering by type for now due to unavailbilty of real data
         },
       },
-
       {
         $project: {
           title: 1,
@@ -403,41 +403,38 @@ export const getTopRatedMovies = async (req, res) => {
         },
       },
       {
-        $limit: 5,
+        $limit: 6,
       },
     ]);
 
-    let mapMovies;
-    mapMovies = await Promise.all(
-      movies.map(async (m) => {
-        const resu = await Review.aggregate([
-          {
-            $match: { parentMovie: m._id },
-          },
-          {
-            $group: {
-              _id: null,
-              count: { $sum: 1 },
-              avgRating: {
-                $avg: "$rating",
-              },
+    const moviesWithRatings = [];
+
+    for (const movie of movies) {
+      const aggregateMovie = await Review.aggregate([
+        {
+          $match: { parentMovie: movie._id },
+        },
+        {
+          $group: {
+            _id: null,
+            count: { $sum: 1 },
+            avgRating: {
+              $avg: "$rating",
             },
           },
-        ]);
+        },
+      ]);
 
-        //  if(resu){
+      const avgRating = aggregateMovie[0]?.avgRating || 0;
+      moviesWithRatings.push({ ...movie, avgRating });
+    }
 
-        //  }
-        // const avgRating = resu ? resu[0].avgRating : 0;
-        // console.log(avgRating);
-        return {
-          ...m,
-          avgRating: resu[0],
-        };
-      })
+    // Sort movies based on avgRating
+    const sortedMovies = moviesWithRatings.sort(
+      (a, b) => b.avgRating - a.avgRating
     );
-    console.log(mapMovies);
-    res.status(200).json({ msg: "success", data: { mapMovies, movies } });
+
+    res.status(200).json({ msg: "success", data: sortedMovies });
   } catch (error) {
     console.error(error);
     return res.status(400).json({ msg: "error", data: error.message });

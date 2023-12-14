@@ -6,7 +6,10 @@ const Homepage = () => {
   return (
     <div className="text-white container mt-3">
       <TopFiveMovies />
-      <MovieCards />
+      <div>Top Movies</div>
+      <MovieCards type="Film" />
+      <div>Top Movies</div>
+      <MovieCards type="Film" />
     </div>
   );
 };

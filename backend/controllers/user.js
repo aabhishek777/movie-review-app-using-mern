@@ -39,7 +39,7 @@ export const login = async (req, res) => {
 
   try {
     const user = await User.find({ email });
-
+    console.log(user);
     if (user?.length === 0) {
       res.status(300).json({ msg: "Your email is not registered" });
       return;
